@@ -49,7 +49,7 @@ func (c *userController) Register(ctx *gin.Context) {
 }
 
 func (c *userController) Login(ctx *gin.Context) {
-	var dto dto.Register
+	var dto dto.Login
 	if err := ctx.ShouldBindJSON(&dto); err != nil {
 		utils.ResponseError(ctx, "Invalid input", http.StatusBadRequest)
 		return

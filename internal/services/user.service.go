@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"errors"
 
 	"github.com/handarudwiki/mkp-tht/internal/dto"
 	"github.com/handarudwiki/mkp-tht/internal/models"
@@ -14,7 +13,7 @@ import (
 type (
 	User interface {
 		Register(ctx context.Context, dto dto.Register) (user models.User, errr error)
-		Login(ctx context.Context, dto dto.Register) (token string, err error)
+		Login(ctx context.Context, dto dto.Login) (token string, err error)
 	}
 	userService struct {
 		repository repositories.User
@@ -32,11 +31,12 @@ func NewUserService(repository repositories.User, jwtSecret string) User {
 func (s *userService) Register(ctx context.Context, dto dto.Register) (user models.User, err error) {
 	user, err = s.repository.FindByEmail(ctx, dto.Email)
 
-	if err != nil && !errors.Is(err, commons.ErrNotfound) {
+	if err == nil {
 		return
 	}
+
 	if user.ID != 0 {
-		return
+		return user, commons.ErrConflict
 	}
 	user = models.User{
 		Email:    dto.Email,
@@ -56,7 +56,7 @@ func (s *userService) Register(ctx context.Context, dto dto.Register) (user mode
 	return user, nil
 }
 
-func (s *userService) Login(ctx context.Context, dto dto.Register) (token string, err error) {
+func (s *userService) Login(ctx context.Context, dto dto.Login) (token string, err error) {
 	user, err := s.repository.FindByEmail(ctx, dto.Email)
 	if err != nil {
 		return "", commons.ErrCredentials
