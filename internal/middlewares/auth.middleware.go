@@ -1,3 +1,14 @@
+package middlewares
+
+import (
+	"net/http"
+	"strings"
+
+	"github.com/gin-gonic/gin"
+	"github.com/handarudwiki/mkp-tht/config"
+	"github.com/handarudwiki/mkp-tht/internal/utils"
+)
+
 func AuthMiddleware(cfg config.JWT) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.Request.Header.Get("Authorization")
@@ -25,7 +36,6 @@ func AuthMiddleware(cfg config.JWT) gin.HandlerFunc {
 		}
 
 		c.Set("id", claims.UserId)
-		c.Set("role", claims.Role)
 		c.Next()
 	}
 }
