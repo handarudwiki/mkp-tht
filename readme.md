@@ -50,7 +50,7 @@ goose -dir database/migrations postgres "postgres://username:password@localhost:
 ### 3. Jalankan Aplikasi
 
 ```bash
-go run cmd/main.go
+make run
 ```
 
 ## 🧪 Testing API
